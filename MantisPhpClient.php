@@ -9,7 +9,7 @@
 /**
  * A php client for MantisBT / MantisHub SOAP API.
  */
-class WebService {
+class MantisPhpClient {
     /**
      * The Soap Client.
      */
