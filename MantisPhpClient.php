@@ -352,7 +352,7 @@ class MantisPhpClient {
      * @param $p_user array that can contain id, name, or email.
      * @return true found, false otherwise.
      */
-    public function user_exists( $p_user ) {
+    public function userExists( $p_user ) {
         $t_mantis_version = $this->getMantisVersion();
 
         if ( version_compare( $t_mantis_version, '1.2.16dev' ) >= 0 ) {
@@ -363,7 +363,7 @@ class MantisPhpClient {
                 return false;
             }
         } else {
-            throw new Exception( 'user_exists() can only be called on v1.2.16+.' );
+            throw new Exception( 'userExists() can only be called on v1.2.16+.' );
         }
     }
 
@@ -374,7 +374,7 @@ class MantisPhpClient {
      * @param int $p_filter_id [optional] <p>Custom Filter Id</p>
      * @return Array <p> Result array</p>
      */
-    public function issuesList( $p_project_id, $p_current_page = 1, $p_filter_id = 0 ) {
+    public function getIssues( $p_project_id, $p_current_page = 1, $p_filter_id = 0 ) {
         global $g_issues_list_limit;
         $t_processed = false;
 
@@ -422,11 +422,20 @@ class MantisPhpClient {
     }
 
     /**
+     * Creates an issue.
+     * @param Array $p_data <p>New Issue detail</p>
+     * @return int <p> New Issue ID </p>
+     */
+    public function addIssue( $p_data ) {
+        return $this->soap_client->mc_issue_add( $this->username, $this->password, $p_data );
+    }
+
+    /**
      * Gets issue detail by providing issue id
      * @param int $p_issue_id <p>Issue id got get detail for</p>
      * @return Array <p> Result array</p>
      */
-    public function issueDetail( $p_issue_id ) {
+    public function getIssue( $p_issue_id ) {
         $t_issue = $this->soap_client->mc_issue_get( $this->username, $this->password, $p_issue_id );
 
         if ( !isset( $t_issue->custom_fields ) ) {
@@ -434,6 +443,16 @@ class MantisPhpClient {
         }
 
         return $t_issue;
+    }
+
+    /**
+     * Updates Issue detail
+     * @param int $p_issue_id <p>Issue id</p>
+     * @param Array $p_data <p>Issue Data Array</p>
+     * @return boolean
+     */
+    public function updateIssue( $p_issue_id, $p_data) {
+        return $this->soap_client->mc_issue_update( $this->username, $this->password, $p_issue_id, $p_data );
     }
 
     /**
@@ -451,15 +470,6 @@ class MantisPhpClient {
      */
     public function getCustomFieldDefinitions( $p_project_id ) {
         return $this->soap_client->mc_project_get_custom_fields( $this->username, $this->password, $p_project_id );
-    }
-
-    /**
-     * Saves New Issue
-     * @param Array $p_data <p>New Issue detail</p>
-     * @return int <p> New Issue ID </p>
-     */
-    public function saveNewIssue( $p_data ) {
-        return $this->soap_client->mc_issue_add( $this->username, $this->password, $p_data );
     }
 
     /**
@@ -487,7 +497,7 @@ class MantisPhpClient {
      * @param int $p_note_id <p>Note id to get required note object</p>
      * @return Array <p> Result array</p>
      */
-    public function getNoteDetail( $p_issue_id, $p_note_id ) {
+    public function getNote( $p_issue_id, $p_note_id ) {
         $t_issue_detail = $this->issueDetail( $p_issue_id );
 
         if ( isset( $t_issue_detail ) ) {
@@ -526,16 +536,6 @@ class MantisPhpClient {
      */
     public function deleteNote( $p_note_id ) {
         return $this->soap_client->mc_issue_note_delete( $this->username, $this->password, $p_note_id );
-    }
-
-    /**
-     * Updates Issue detail
-     * @param int $p_issue_id <p>Issue id</p>
-     * @param Array $p_data <p>Issue Data Array</p>
-     * @return boolean
-     */
-    public function updateIssueDetail( $p_issue_id, $p_data) {
-        return $this->soap_client->mc_issue_update( $this->username, $this->password, $p_issue_id, $p_data );
     }
 
     /**
