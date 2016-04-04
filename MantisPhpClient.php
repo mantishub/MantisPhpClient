@@ -55,9 +55,7 @@ class MantisPhpClient {
     /**
      * The constructor.
      */
-    public function __construct( $p_soap_wsdl_url, $p_username, $p_password ) {
-        global $g_mantis_touch_version;
-
+    public function __construct( $p_soap_wsdl_url, $p_username, $p_password, $p_user_agent = 'MantisPhpClient' ) {
         $this->soap_uri = rtrim( $p_soap_wsdl_url, " /" );
 
         # Make sure url points to the webservice and not just mantisbt instance
@@ -79,7 +77,7 @@ class MantisPhpClient {
                 'location' => $this->soap_uri,
                 'soap_version' => SOAP_1_1,
                 'encoding' => 'UTF-8',
-                'user_agent' => 'MantisTouch/' . $g_mantis_touch_version,
+                'user_agent' => $p_user_agent,
                 'exceptions' => 1,
                 'connection_timeout' => 15,
                 'style'    => SOAP_DOCUMENT,
