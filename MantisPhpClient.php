@@ -84,7 +84,7 @@ class MantisPhpClient {
                 'connection_timeout' => 15,
                 'style'    => SOAP_DOCUMENT,
                 'use'      => SOAP_LITERAL,
-                'cache_wsdl' => WSDL_CACHE_NONE,
+                'cache_wsdl' => WSDL_CACHE_DISK,
             )
         );
 
