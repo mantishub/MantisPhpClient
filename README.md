@@ -6,5 +6,7 @@ with SOAP API from PHP.
 
 Requirements
 ------------
-- Ideally MantisBT 1.2.16+
+- MantisHub (supported)
+- MantisBT 1.3.x (supported)
+- MantisBT 1.2.16+ (use latest 1.2.x release)
 
