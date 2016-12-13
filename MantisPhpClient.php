@@ -10,7 +10,7 @@
  * A php client for MantisBT / MantisHub SOAP API.
  */
 class MantisPhpClient {
-    const CLIENT_VERSION = '1.0.0';
+    const CLIENT_VERSION = '1.0.1';
 
     /**
      * @var SoapClient The Soap Client.
@@ -491,12 +491,18 @@ class MantisPhpClient {
      * Adds New Note
      * @param int $p_issue_id <p>Issue id</p>
      * @param string $p_text <p>The note text.</p>
+     * @param StdClass $p_view_state <p>The note view state, basically the public/private state.</p>
+     * @see MantisPhpClient::getEnumViewState()
      * @return int <p> New Note ID </p>
      */
-    public function addNote( $p_issue_id, $p_text ) {
+    public function addNote( $p_issue_id, $p_text, $p_view_state = null ) {
         $t_data = array(
             'text' => $p_text,
         );
+
+        if(isset($p_view_state)){
+          $t_data['view_state'] = $p_view_state;
+        }
 
         return $this->soap_client->mc_issue_note_add( $this->username, $this->password, $p_issue_id, $t_data );
     }
