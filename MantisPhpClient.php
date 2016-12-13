@@ -10,60 +10,66 @@
  * A php client for MantisBT / MantisHub SOAP API.
  */
 class MantisPhpClient {
+    const CLIENT_VERSION = '1.0.0';
+
     /**
-     * The Soap Client.
+     * @var SoapClient The Soap Client.
      */
     private $soap_client;
 
     /**
-     * The uri for the webservice.
+     * @var string The uri for the webservice.
      */
     private $soap_uri;
 
     /**
-     * The uri for MantisBT instance.
+     * @var string The uri for MantisBT instance.
      */
     private $mantis_uri;
 
     /**
-     * The MantisBT version.
+     * @var string The MantisBT version.
      */
     private $mantis_version;
 
     /**
-     * The cached list of projects.
+     * @var array The cached list of projects.
      */
     private $projects;
 
     /**
-     * The user name.
+     * @var string The user name.
      */
     private $username;
 
     /**
-     * The user password.
+     * @var string The user password.
      */
     private $password;
 
     /**
-     * Username returned by mc_login() this should be used for further queries to webservice.
-     * It will be different from $username in case of anonymous login where username will be
-     * blank and this one will be the actual username.
+     * @var string Username returned by mc_login() this should be used for further queries to webservice.
+     *              It will be different from $username in case of anonymous login where username will be
+     *              blank and this one will be the actual username.
      */
     private $effective_username;
 
     /**
-     * The constructor.
+     * MantisPhpClient constructor.
+     * @param string $p_soap_wsdl_url
+     * @param string$p_username
+     * @param string $p_password
+     * @param string string $p_user_agent
      */
     public function __construct( $p_soap_wsdl_url, $p_username, $p_password, $p_user_agent = 'MantisPhpClient' ) {
-        $this->soap_uri = rtrim( $p_soap_wsdl_url, " /" );
+        $this->soap_uri = rtrim( $p_soap_wsdl_url, ' /' );
 
-        # Make sure url points to the webservice and not just mantisbt instance
+        // Make sure url points to the webservice and not just mantisbt instance
         if ( stristr( $this->soap_uri, 'mantisconnect.php' ) === false ) {
             $this->soap_uri .= '/api/soap/mantisconnect.php';
         }
 
-        # Make sure url starts with http:// or https://
+        // Make sure url starts with http:// or https://
         if ( stristr( $this->soap_uri, 'http' ) === false ) {
             $this->soap_uri = 'http://' . $this->soap_uri;
         }
@@ -92,32 +98,38 @@ class MantisPhpClient {
     }
 
     /**
-     * Gets the MantisBT instance URI without the suffix for the webservice end point.
+     * return string The MantisBT instance URI without the suffix for the webservice end point.
      */
     public function getMantisUri() {
         return $this->mantis_uri;
     }
 
     /**
-     * Gets the MantisBT instance URI without the suffix for the webservice end point.
+     * @return string The MantisBT instance URI without the suffix for the webservice end point.
      */
     public function getMantisSoapUri() {
         return $this->soap_uri;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function validate() {
-        # check if we get functions array else the web service url is invalid or something went wrong
+        // check if we get functions array else the web service url is invalid or something went wrong
         if ( !is_array( $this->soap_client->getFunctions() ) ) {
             throw new Exception( "Problem connecting web service '$this->soap_uri'.", 1 );
         }
     }
 
+    /**
+     * @return  mixed
+     */
     public function getResponse() {
         return $this->soap_client->__getLastResponse() . "\n" . $this->soap_client->__getLastResponse();
     }
 
     /**
-     * Get MantisBT version.
+     * @return string The MantisBT version.
      */
     public function getMantisVersion() {
         if ( $this->mantis_version === null ) {
@@ -130,7 +142,7 @@ class MantisPhpClient {
     /**
      * Gets categories list of a project.
      * @param int $p_project_id <p>Project id must be supplied</p>
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getCategoriesList( $p_project_id ) {
         return $this->soap_client->mc_project_get_categories( $this->username, $this->password, $p_project_id );
@@ -166,7 +178,7 @@ class MantisPhpClient {
     /**
      * Gets Filters list of a project.
      * @param int $p_project_id <p>Project id must be supplied</p>
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getCustomFiltersList( $p_project_id ) {
         $t_result = $this->soap_client->mc_filter_get( $this->username, $this->password, $p_project_id );
@@ -180,7 +192,7 @@ class MantisPhpClient {
     /**
      * Gets versions list of a project.
      * @param int $p_project_id <p>Project id must be supplied</p>
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getVersionsList( $p_project_id ) {
         return $this->soap_client->mc_project_get_versions( $this->username, $this->password, $p_project_id );
@@ -189,7 +201,7 @@ class MantisPhpClient {
     /**
      * Gets MantisBT configuration of given variable
      * @param string $p_config_var <p>MantisBT variable for configuration</p>
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getConfigString( $p_config_var ) {
         try
@@ -205,7 +217,7 @@ class MantisPhpClient {
 
     /**
      * Gets Enum Status
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getEnumStatus() {
         return $this->soap_client->mc_enum_status( $this->username, $this->password );
@@ -213,7 +225,7 @@ class MantisPhpClient {
 
     /**
      * Gets Enum Resolution
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getEnumResolution() {
         return $this->soap_client->mc_enum_resolutions( $this->username, $this->password );
@@ -221,7 +233,7 @@ class MantisPhpClient {
 
     /**
      * Gets Enum Access Levels
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getEnumAccessLevel() {
         return $this->soap_client->mc_enum_access_levels( $this->username, $this->password );
@@ -229,7 +241,7 @@ class MantisPhpClient {
 
     /**
      * Gets Enum Priority
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getEnumPriority() {
         return $this->soap_client->mc_enum_priorities( $this->username, $this->password );
@@ -237,7 +249,7 @@ class MantisPhpClient {
 
     /**
      * Gets Enum Severity
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getEnumSeverity() {
         return $this->soap_client->mc_enum_severities( $this->username, $this->password );
@@ -245,7 +257,7 @@ class MantisPhpClient {
 
     /**
      * Gets Enum Eta
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getEnumEta() {
         return $this->soap_client->mc_enum_etas( $this->username, $this->password );
@@ -253,7 +265,7 @@ class MantisPhpClient {
 
     /**
      * Gets Enum Project Status
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getEnumProjectStatus() {
         return $this->soap_client->mc_enum_project_status( $this->username, $this->password );
@@ -261,7 +273,7 @@ class MantisPhpClient {
 
     /**
      * Gets Enum Project View States
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getEnumProjectViewState() {
         return $this->soap_client->mc_enum_project_view_states( $this->username, $this->password );
@@ -269,7 +281,7 @@ class MantisPhpClient {
 
     /**
      * Gets Enum Projection
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getEnumProjection() {
         return $this->soap_client->mc_enum_projections( $this->username, $this->password );
@@ -277,7 +289,7 @@ class MantisPhpClient {
 
     /**
      * Gets Enum Reproducibility
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getEnumReproducibility() {
         return $this->soap_client->mc_enum_reproducibilities( $this->username, $this->password );
@@ -285,7 +297,7 @@ class MantisPhpClient {
 
     /**
      * Gets Enum View State
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getEnumViewState() {
         return $this->soap_client->mc_enum_view_states( $this->username, $this->password );
@@ -295,14 +307,14 @@ class MantisPhpClient {
      * Gets Project Users
      * @param int $p_project_id <p>Project id must be supplied</p>
      * @param int $p_access_id <p>Access id</p>
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getProjectUsers( $p_project_id, $p_access_id ) {
         return $this->soap_client->mc_project_get_users( $this->username, $this->password, $p_project_id, $p_access_id );
     }
 
     /**
-     * Get the list of accessible projects.
+     * @return array The list of accessible projects.
      */
     public function getProjects() {
         if ( $this->projects === null ) {
@@ -313,19 +325,23 @@ class MantisPhpClient {
     }
 
     /**
-     * Gets the information about the specified project or null if not found.
+     * @return StdClass|null Gets the information about the specified project or null if not found.
      */
     public function getProjectById( $p_project_id ) {
         $t_projects = $this->getProjects();
         return $this->getProjectFromProjectTree( $p_project_id, $t_projects );
     }
 
+  /**
+   * @param string $p_project_name
+   * @return int
+   */
     public function getProjectIdByName( $p_project_name ) {
         return $this->soap_client->mc_project_get_id_from_name( $this->username, $this->password, $p_project_name );
     }
 
     /**
-     * A recursive method to find a project by id in a project and all its sub-projects.
+     * @return StdClass|null A recursive method to find a project by id in a project and all its sub-projects.
      */
     private function getProjectFromProjectTree( $p_project_id, $p_projects ) {
         foreach ( $p_projects as $t_project ) {
@@ -347,15 +363,16 @@ class MantisPhpClient {
     /**
      * Checks if a user exists.
      *
-     * @param $p_user array that can contain id, name, or email.
+     * @param StdClass $p_user array that can contain id, name, or email.
      * @return true found, false otherwise.
+     * @throws Exception
      */
     public function userExists( $p_user ) {
         $t_mantis_version = $this->getMantisVersion();
 
         if ( version_compare( $t_mantis_version, '1.2.16dev' ) >= 0 ) {
             try {
-                $this->soap_client->mc_project_get_issues_for_user( $this->username, $this->password, ALL_PROJECTS, 'reported', $p_user, 1, 1 );
+                $this->soap_client->mc_project_get_issues_for_user( $this->username, $this->password, 'ALL_PROJECTS', 'reported', $p_user, 1, 1 );
                 return true;
             } catch (Exception $e) {
                 return false;
@@ -370,7 +387,7 @@ class MantisPhpClient {
      * @param int $p_project_id <p>Project id must be supplied</p>
      * @param int $p_current_page [optional] <p>Current Page Number</p>
      * @param int $p_filter_id [optional] <p>Custom Filter Id</p>
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getIssues( $p_project_id, $p_current_page = 1, $p_filter_id = 0 ) {
         global $g_issues_list_limit;
@@ -421,7 +438,7 @@ class MantisPhpClient {
 
     /**
      * Creates an issue.
-     * @param Array $p_data <p>New Issue detail</p>
+     * @param array $p_data <p>New Issue detail</p>
      * @return int <p> New Issue ID </p>
      */
     public function addIssue( $p_data ) {
@@ -431,7 +448,7 @@ class MantisPhpClient {
     /**
      * Gets issue detail by providing issue id
      * @param int $p_issue_id <p>Issue id got get detail for</p>
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getIssue( $p_issue_id ) {
         $t_issue = $this->soap_client->mc_issue_get( $this->username, $this->password, $p_issue_id );
@@ -446,7 +463,7 @@ class MantisPhpClient {
     /**
      * Updates Issue detail
      * @param int $p_issue_id <p>Issue id</p>
-     * @param Array $p_data <p>Issue Data Array</p>
+     * @param array $p_data <p>Issue Data Array</p>
      * @return boolean
      */
     public function updateIssue( $p_issue_id, $p_data) {
@@ -464,7 +481,7 @@ class MantisPhpClient {
     /**
      * Gets the custom fields definitions for the specified project.
      * @param int $p_project_id <p>The id of the project to get the fields for.</p>
-     * @return Array <p>Result array</p>
+     * @return array <p>Result array</p>
      */
     public function getCustomFieldDefinitions( $p_project_id ) {
         return $this->soap_client->mc_project_get_custom_fields( $this->username, $this->password, $p_project_id );
@@ -484,6 +501,13 @@ class MantisPhpClient {
         return $this->soap_client->mc_issue_note_add( $this->username, $this->password, $p_issue_id, $t_data );
     }
 
+  /**
+   * @param int $p_issue_id
+   * @param string $p_file_name
+   * @param string $p_file_type
+   * @param string $p_file_path
+   * @return mixed
+   */
     public function addAttachment( $p_issue_id, $p_file_name, $p_file_type, $p_file_path ) {
         $t_content  = file_get_contents( $p_file_path );
         return $this->soap_client->mc_issue_attachment_add( $this->username, $this->password, $p_issue_id, $p_file_name, $p_file_type, $t_content );
@@ -493,10 +517,10 @@ class MantisPhpClient {
      * Gets note detail by providing issue_id and note_id
      * @param int $p_issue_id <p>Issue id got get issue detail</p>
      * @param int $p_note_id <p>Note id to get required note object</p>
-     * @return Array <p> Result array</p>
+     * @return array <p> Result array</p>
      */
     public function getNote( $p_issue_id, $p_note_id ) {
-        $t_issue_detail = $this->issueDetail( $p_issue_id );
+        $t_issue_detail = $this->getIssue( $p_issue_id );
 
         if ( isset( $t_issue_detail ) ) {
             foreach ( $t_issue_detail->notes as $t_note ) {
@@ -514,6 +538,7 @@ class MantisPhpClient {
      *
      * @param int $p_id <p>Note id</p>
      * @param string $p_text <p>The note text.</p>
+     * @throws Exception
      */
     public function updateNote( $p_id, $p_text ) {
         $t_note_data = array(
@@ -552,7 +577,8 @@ class MantisPhpClient {
 
     /**
      * Authenticates user
-     * @return the user data array (id, name, real_name, email, access_level, and timezone).
+     * @return array The user data array (id, name, real_name, email, access_level, and timezone).
+     * @throws Exception
      */
     public function authenticateUser() {
         $t_user_data = array();
@@ -584,23 +610,29 @@ class MantisPhpClient {
         return $t_user_data;
     }
 
+  /**
+   * @param string $p_effective_username
+   */
     public function setEffectiveUserName( $p_effective_username ) {
         $this->effective_username = $p_effective_username;
     }
 
+  /**
+   * @return bool
+   */
     public function isAnonymousAccess() {
         return !empty( $this->effective_username ) && $this->username != $this->effective_username;
     }
 
     /**
-     * Gets the default project.
+     * @return StdClass the default project.
      */
     public function getDefaultProject() {
         return $this->getUserPreference( 'default_project' );
     }
 
     /**
-     * Gets the user language.
+     * @return string the user language.
      */
     public function getUserLanguage() {
         return $this->getUserPreference( 'language' );
@@ -608,12 +640,12 @@ class MantisPhpClient {
 
     /**
      * Gets the specified issue attachment.
-     * @param $p_issue_id The issue id.
-     * @param $p_file_id The attachment id.
-     * @param string attachment content.
+     * @param int $p_issue_id The issue id.
+     * @param int $p_file_id The attachment id.
+     * @return StdClass attachment content.
      */
     public function getIssueAttachment( $p_issue_id, $p_file_id ) {
-        $t_issue = $this->issueDetail( $p_issue_id );
+        $t_issue = $this->getIssue( $p_issue_id );
 
         $t_attachment_info = null;
 
@@ -638,6 +670,7 @@ class MantisPhpClient {
     /**
      * Set the timezone based on the user's time zone, or the default timezone for the remote instance if the user doesn't
      * have their timezone set.
+     * @return void
      */
     public function setTimeZone() {
         // TODO: Should the timezone be cached?
@@ -647,9 +680,11 @@ class MantisPhpClient {
             $t_timezone = $this->getConfigString( 'default_timezone' );
         }
 
-        # Attempt to set the current timezone to the user's desired value
-        # Note that PHP 5.1 on RHEL/CentOS doesn't support the timezone functions
-        # used here so we just skip this action on RHEL/CentOS platforms.
+      /**
+       *  Attempt to set the current timezone to the user's desired value
+       *  Note that PHP 5.1 on RHEL/CentOS doesn't support the timezone functions
+       *  used here so we just skip this action on RHEL/CentOS platforms.
+       */
         if ( function_exists( 'timezone_identifiers_list' ) ) {
             if ( !@date_default_timezone_set( $t_timezone ) ) {
                 @date_default_timezone_set( 'America/Los_Angeles' );
@@ -658,7 +693,7 @@ class MantisPhpClient {
     }
 
     /**
-     * Gets the specified user preference.
+     * @return array The specified user preference.
      * MantisBT returns a incorrect value for 0 (ALL_PROJECTS), from all other projects.  The correct value seems to be
      * returned even if the supplied value has no corresponding project.  In other words, a project is != 0 will work.
      */
@@ -671,11 +706,33 @@ class MantisPhpClient {
  * Filter class used to capture information about a single filter.
  */
 class Filter {
+  /**
+   * @var int
+   */
     public $id;
+
+  /**
+   * @var string
+   */
     public $name;
 
+  /**
+   * Filter constructor.
+   * @param int $id
+   * @param string $name
+   */
     public function __construct( $id, $name ) {
         $this->id = $id;
         $this->name = $name;
     }
+}
+
+if(!function_exists('lang_get_text')){
+  /**
+   * @param string $str
+   * @return string
+   */
+  function lang_get_text($str){
+    return $str;
+  }
 }
