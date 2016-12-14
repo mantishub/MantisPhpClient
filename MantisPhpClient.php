@@ -327,7 +327,8 @@ class MantisPhpClient {
     }
 
     /**
-     * @return array The list of accessible projects.
+     * Gets the list of accessible projects.
+     * @return array
      */
     public function getProjects() {
         if ( $this->projects === null ) {
