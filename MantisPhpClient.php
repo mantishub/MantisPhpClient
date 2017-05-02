@@ -128,7 +128,7 @@ class MantisPhpClient {
        * Check if we get functions array else the web service
        * url is invalid or something went wrong
        */
-        if ( !is_array( $this->soap_client->getFunctions() ) ) {
+        if ( !is_array( $this->soap_client->__getFunctions() ) ) {
             throw new Exception( "Problem connecting web service '$this->soap_uri'.", 1 );
         }
     }
