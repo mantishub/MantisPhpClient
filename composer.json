@@ -1,5 +1,5 @@
 {
-    "name": "MantisHub/MantisPhpClient",
+    "name": "mantishub/mantis-php-client",
     "type": "library",
     "description": "Library to interact with MantisBT or MantisHub via SOAP API",
     "keywords": ["mantisbt","mantishub", "api", "SOAP"],
