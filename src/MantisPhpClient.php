@@ -9,14 +9,12 @@
  * All rights reserved.
  */
 
-
+namespace MantisHub;
 
 /**
  * A php client for MantisBT / MantisHub SOAP API.
  */
 class MantisPhpClient {
-    const CLIENT_VERSION = '1.0.1';
-
     const ALL_PROJECTS = 0;
 
     /**
@@ -90,7 +88,7 @@ class MantisPhpClient {
                 'location' => $this->soap_uri,
                 'soap_version' => SOAP_1_1,
                 'encoding' => 'UTF-8',
-                'user_agent' => $p_user_agent ?: 'MantisPhpClient/' . self::CLIENT_VERSION,
+                'user_agent' => $p_user_agent ?: 'MantisPhpClient',
                 'exceptions' => 1,
                 'connection_timeout' => 15,
                 'style'    => SOAP_DOCUMENT,

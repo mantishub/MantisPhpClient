@@ -1,0 +1,21 @@
+{
+    "name": "MantisHub/MantisPhpClient",
+    "type": "library",
+    "description": "Library to interact with MantisBT or MantisHub via SOAP API",
+    "keywords": ["mantisbt","mantishub", "api", "SOAP"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Victor Boctor",
+            "email": "victor@mantishub.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.0.0"
+    },
+    "autoload": {
+        "psr-4" : {
+            "MantisHub\\" : "src"
+        }
+    }
+}
