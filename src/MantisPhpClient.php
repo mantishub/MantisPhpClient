@@ -82,7 +82,7 @@ class MantisPhpClient {
         $t_suffix = stristr( $this->soap_uri, '/api' );
         $this->mantis_uri = substr( $this->soap_uri, 0, strlen( $this->soap_uri ) - strlen( $t_suffix ) );
 
-        $this->soap_client = @new SoapClient(
+        $this->soap_client = @new \SoapClient(
             $this->soap_uri . '?wsdl',
             array(
                 'location' => $this->soap_uri,
