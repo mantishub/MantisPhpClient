@@ -1,6 +1,8 @@
 <?php
 include dirname( dirname( __FILE__ ) ) . '/MantisPhpClient.php';
 
+use MantisHub\MantisPhpClient;
+
 # TODO:
 # Set the username
 # Set the api token or password
