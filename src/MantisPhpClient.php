@@ -11,6 +11,8 @@
 
 namespace MantisHub;
 
+use SoapClient;
+
 /**
  * A php client for MantisBT / MantisHub SOAP API.
  */
