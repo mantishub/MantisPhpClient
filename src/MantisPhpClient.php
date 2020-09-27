@@ -11,8 +11,6 @@
 
 namespace MantisHub;
 
-use SoapClient;
-
 /**
  * A php client for MantisBT / MantisHub SOAP API.
  */
@@ -426,7 +424,7 @@ class MantisPhpClient {
                 $t_target_user = array();
                 $t_target_user['name'] = $this->effective_username;
 
-                switch ( (string) $p_filter_id ) {
+                switch ( $p_filter_id ) {
                     case 'assigned_to_me':
                         $t_result = $this->soap_client->mc_project_get_issues_for_user( $this->username, $this->password, $p_project_id, 'assigned', $t_target_user, $p_current_page, $g_issues_list_limit );
                         $t_processed = true;
@@ -455,6 +453,17 @@ class MantisPhpClient {
         }
 
         return $t_result;
+    }
+
+    /**
+     * Get the issues that match the custom filter and paging details.
+     * @param $p_filter array Filter to search on
+     * @param $p_page_number int Page number for this result
+     * @param int $p_per_page int Issues per page
+     * @return mixed
+     */
+    public function searchIssues( $p_filter, $p_page_number = 1, $p_per_page = 1500 ) {
+        return $this->soap_client->mc_filter_search_issues( $this->username, $this->password, $p_filter, $p_page_number, $p_per_page );
     }
 
     /**
