@@ -424,7 +424,7 @@ class MantisPhpClient {
                 $t_target_user = array();
                 $t_target_user['name'] = $this->effective_username;
 
-                switch ( $p_filter_id ) {
+                switch ( (string) $p_filter_id ) {
                     case 'assigned_to_me':
                         $t_result = $this->soap_client->mc_project_get_issues_for_user( $this->username, $this->password, $p_project_id, 'assigned', $t_target_user, $p_current_page, $g_issues_list_limit );
                         $t_processed = true;
