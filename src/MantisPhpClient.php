@@ -456,6 +456,17 @@ class MantisPhpClient {
     }
 
     /**
+     * Get the issues that match the custom filter and paging details.
+     * @param $p_filter array Filter to search on
+     * @param $p_page_number int Page number for this result
+     * @param int $p_per_page int Issues per page
+     * @return mixed
+     */
+    public function searchIssues( $p_filter, $p_page_number = 1, $p_per_page = 1500 ) {
+        return $this->soap_client->mc_filter_search_issues( $this->username, $this->password, $p_filter, $p_page_number, $p_per_page );
+    }
+
+    /**
      * Creates an issue and returns the ID or false if failure
      * @param array $p_data New Issue detail
      * @return int|false
